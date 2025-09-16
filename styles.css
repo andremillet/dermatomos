@@ -1,0 +1,103 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#form-section {
+    flex: 1;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+fieldset {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+legend {
+    font-weight: bold;
+}
+
+label {
+    margin-right: 10px;
+}
+
+button {
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+#map-section {
+    text-align: center;
+}
+
+svg {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+circle, rect {
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+circle:hover, rect:hover {
+    opacity: 0.7;
+}
+
+#suggestions {
+    background: #e9ecef;
+}
+
+#output {
+    font-weight: bold;
+    color: #d9534f;
+}
+
+@media (min-width: 768px) {
+    main {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    #form-section, #map-section {
+        flex: 1;
+        min-width: 300px;
+    }
+    #suggestions {
+        flex-basis: 100%;
+    }
+}

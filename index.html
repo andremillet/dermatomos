@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exame Neurológico - Sensibilidade</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Exame Físico Neurológico - Sensibilidade</h1>
+        <p>Selecione uma região e indique alterações em dor, temperatura, vibração e propriocepção.</p>
+    </header>
+
+    <main>
+        <section id="form-section">
+            <h2>Entrada de Dados</h2>
+            <form id="exam-form">
+                <label for="region">Região:</label>
+                <input type="text" id="region" placeholder="Ex.: face lateral da perna direita" required>
+
+                <fieldset>
+                    <legend>Dor</legend>
+                    <label><input type="radio" name="dor" value="normal" checked> Normal</label>
+                    <label><input type="radio" name="dor" value="diminuida"> Diminuída</label>
+                    <label><input type="radio" name="dor" value="aumentada"> Aumentada</label>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Temperatura</legend>
+                    <label><input type="radio" name="temperatura" value="normal" checked> Normal</label>
+                    <label><input type="radio" name="temperatura" value="perda"> Perda</label>
+                    <label><input type="radio" name="temperatura" value="diminuicao"> Diminuição</label>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Vibração</legend>
+                    <label><input type="radio" name="vibracao" value="normal" checked> Normal</label>
+                    <label><input type="radio" name="vibracao" value="perda"> Perda</label>
+                    <label><input type="radio" name="vibracao" value="diminuicao"> Diminuição</label>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Propriocepção</legend>
+                    <label><input type="radio" name="propriocepcao" value="normal" checked> Normal</label>
+                    <label><input type="radio" name="propriocepcao" value="perda"> Perda</label>
+                    <label><input type="radio" name="propriocepcao" value="diminuicao"> Diminuição</label>
+                </fieldset>
+
+                <button type="submit">Salvar e Sugerir</button>
+            </form>
+        </section>
+
+        <section id="map-section">
+            <h2>Mapa de Dermatomos</h2>
+            <p>Clique em uma região para preenchê-la automaticamente.</p>
+            <svg id="body-map" width="300" height="600" viewBox="0 0 300 600">
+                <!-- Cabeça -->
+                <circle cx="150" cy="50" r="30" fill="lightblue" data-region="cabeça" data-dermatomo="C2-C3"></circle>
+                <text x="150" y="55" text-anchor="middle" font-size="12">Cabeça (C2-C3)</text>
+
+                <!-- Pescoço -->
+                <rect x="130" y="80" width="40" height="30" fill="lightgreen" data-region="pescoço" data-dermatomo="C3-C4"></rect>
+                <text x="150" y="100" text-anchor="middle" font-size="10">Pescoço</text>
+
+                <!-- Braços -->
+                <rect x="50" y="120" width="30" height="150" fill="lightcoral" data-region="braço direito" data-dermatomo="C5-T1"></rect>
+                <text x="65" y="200" text-anchor="middle" font-size="10">Braço Dir.</text>
+                <rect x="220" y="120" width="30" height="150" fill="lightcoral" data-region="braço esquerdo" data-dermatomo="C5-T1"></rect>
+                <text x="235" y="200" text-anchor="middle" font-size="10">Braço Esq.</text>
+
+                <!-- Tronco -->
+                <rect x="120" y="120" width="60" height="200" fill="lightyellow" data-region="tronco" data-dermatomo="T4-T12"></rect>
+                <text x="150" y="230" text-anchor="middle" font-size="10">Tronco</text>
+
+                <!-- Pernas -->
+                <rect x="130" y="330" width="20" height="200" fill="lightpink" data-region="perna direita" data-dermatomo="L2-S1"></rect>
+                <text x="140" y="440" text-anchor="middle" font-size="10">Perna Dir.</text>
+                <rect x="150" y="330" width="20" height="200" fill="lightpink" data-region="perna esquerda" data-dermatomo="L2-S1"></rect>
+                <text x="160" y="440" text-anchor="middle" font-size="10">Perna Esq.</text>
+            </svg>
+        </section>
+
+        <section id="suggestions">
+            <h2>Sugestões</h2>
+            <div id="output"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
