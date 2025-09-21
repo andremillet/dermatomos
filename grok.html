@@ -1,0 +1,305 @@
+<!DOCTYPE html> 
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico Diferencial: Nervo Periférico vs. Raiz Nervosa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        select, button {
+            padding: 8px;
+            margin: 5px 0;
+            width: 100%;
+            max-width: 300px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #sugestoes {
+            margin-top: 20px;
+        }
+        .sugestao {
+            background: #e9ecef;
+        padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .categoria {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .regiao-item {
+            margin: 5px 0;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        #diagnostico {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .periferico { background-color: #d4edda; color: #155724; }
+        .raiz { background-color: #f8d7da; color: #721c24; }
+        .indeterminado { background-color: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Diagnóstico Diferencial: Lesão em Nervo Periférico vs. Raiz Nervosa</h1>
+        <p>Selecione uma região da pele afetada e o tipo de alteração sensitiva para iniciar o diagnóstico diferencial.</p>
+
+        <label for="regiaoSelect">Região da Pele Afetada:</label>
+        <select id="regiaoSelect">
+            <option value="">Selecione uma região...</option>
+        </select>
+
+        <label for="sintomaSelect">Alteração Sensitiva:</label>
+        <select id="sintomaSelect">
+            <option value="">Selecione o sintoma...</option>
+            <option value="dor">Dor</option>
+            <option value="vibracao">Vibração</option>
+            <option value="ambas">Ambas</option>
+        </select>
+
+        <button onclick="iniciarAnalise()">Analisar e Sugerir Testes</button>
+
+        <div id="sugestoes"></div>
+
+        <div id="diagnostico"></div>
+    </div>
+
+    <script>
+        // Dados hardcoded para simplicidade
+        const dados = {
+            "regioes_sensitivas": [
+                {
+                    "regiao": "Pele da região lateral do antebraço (nervo cutâneo lateral do antebraço)",
+                    "nervo_periferico": "Nervo musculocutâneo",
+                    "raizes_nervosas": ["C5", "C6", "C7"]
+                },
+                {
+                    "regiao": "Pele sobre o músculo deltoide",
+                    "nervo_periferico": "Nervo axilar",
+                    "raizes_nervosas": ["C5", "C6"]
+                },
+                {
+                    "regiao": "Pele da superfície posterior do braço",
+                    "nervo_periferico": "Nervo radial",
+                    "raizes_nervosas": ["C5", "C6", "C7", "C8", "T1"]
+                },
+                {
+                    "regiao": "Região central da superfície posterior do antebraço",
+                    "nervo_periferico": "Nervo radial",
+                    "raizes_nervosas": ["C5", "C6", "C7", "C8", "T1"]
+                },
+                {
+                    "regiao": "Superfície lateral do dorso da mão",
+                    "nervo_periferico": "Nervo radial",
+                    "raizes_nervosas": ["C5", "C6", "C7", "C8", "T1"]
+                },
+                {
+                    "regiao": "Região posterior do polegar, do indicador e da metade lateral do dedo médio",
+                    "nervo_periferico": "Nervo radial",
+                    "raizes_nervosas": ["C5", "C6", "C7", "C8", "T1"]
+                },
+                {
+                    "regiao": "Pele da metade lateral da palma da mão",
+                    "nervo_periferico": "Nervo mediano",
+                    "raizes_nervosas": ["C6", "C7", "C8", "T1"]
+                },
+                {
+                    "regiao": "Porção anterior do polegar, do indicador, do dedo médio e da metade lateral do anelar",
+                    "nervo_periferico": "Nervo mediano",
+                    "raizes_nervosas": ["C6", "C7", "C8", "T1"]
+                },
+                {
+                    "regiao": "Porção posterior do polegar, do indicador e da metade lateral do dedo médio",
+                    "nervo_periferico": "Nervo mediano",
+                    "raizes_nervosas": ["C6", "C7", "C8", "T1"]
+                },
+                {
+                    "regiao": "Pele anterior e posterior da metade medial da palma da mão",
+                    "nervo_periferico": "Nervo ulnar",
+                    "raizes_nervosas": ["C8", "T1"]
+                },
+                {
+                    "regiao": "Pele anterior e posterior do dedo mínimo e da metade medial do anelar",
+                    "nervo_periferico": "Nervo ulnar",
+                    "raizes_nervosas": ["C8", "T1"]
+                }
+            ]
+        };
+
+        // Inicializar dropdown de regiões
+        function inicializarDropdowns() {
+            const regiaoSelect = document.getElementById('regiaoSelect');
+            dados.regioes_sensitivas.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.regiao;
+                option.textContent = item.regiao;
+                regiaoSelect.appendChild(option);
+            });
+        }
+
+        // Mapas para agrupar regiões por nervo e por raiz
+        let mapaNervoRegioes = {};
+        let mapaRaizRegioes = {};
+
+        function criarMapas() {
+            dados.regioes_sensitivas.forEach(item => {
+                // Por nervo
+                if (!mapaNervoRegioes[item.nervo_periferico]) {
+                    mapaNervoRegioes[item.nervo_periferico] = [];
+                }
+                mapaNervoRegioes[item.nervo_periferico].push(item.regiao);
+
+                // Por raiz (cada raiz separada)
+                item.raizes_nervosas.forEach(raiz => {
+                    if (!mapaRaizRegioes[raiz]) {
+                        mapaRaizRegioes[raiz] = [];
+                    }
+                    if (!mapaRaizRegioes[raiz].includes(item.regiao)) {
+                        mapaRaizRegioes[raiz].push(item.regiao);
+                    }
+                });
+            });
+        }
+
+        function iniciarAnalise() {
+            const regiaoSelecionada = document.getElementById('regiaoSelect').value;
+            const sintoma = document.getElementById('sintomaSelect').value;
+
+            if (!regiaoSelecionada || !sintoma) {
+                alert('Selecione uma região e um sintoma antes de analisar.');
+                return;
+            }
+
+            // Encontrar dados da região selecionada
+            const itemSelecionado = dados.regioes_sensitivas.find(item => item.regiao === regiaoSelecionada);
+            if (!itemSelecionado) return;
+
+            const nervo = itemSelecionado.nervo_periferico;
+            const raizes = itemSelecionado.raizes_nervosas;
+
+            // Sugestões: outras regiões do mesmo nervo (para confirmar periférico)
+            let outrasRegioesNervo = mapaNervoRegioes[nervo].filter(r => r !== regiaoSelecionada);
+            // Para cada raiz, regiões de outras raízes (para confirmar raiz)
+            let regioesOutrasRaizes = [];
+            raizes.forEach(raiz => {
+                const regioesRaiz = mapaRaizRegioes[raiz].filter(r => r !== regiaoSelecionada);
+                regioesOutrasRaizes.push(...regioesRaiz);
+            });
+            // Remover duplicatas
+            regioesOutrasRaizes = [...new Set(regioesOutrasRaizes)];
+
+            // Limitar sugestões para eficiência
+            outrasRegioesNervo = outrasRegioesNervo.slice(0, 3);
+            regioesOutrasRaizes = regioesOutrasRaizes.slice(0, 3);
+
+            // Exibir sugestões com checkboxes para marcar se afetado
+            let html = `
+                <div class="sugestao">
+                    <h3>Sugestões de Testes para ${sintoma.toUpperCase()} (${regiaoSelecionada})</h3>
+                    <p><strong>Nervo suspeito:</strong> ${nervo}</p>
+                    <p><strong>Raízes suspeitas:</strong> ${raizes.join(', ')}</p>
+                    <p>Marque as regiões abaixo se apresentarem o mesmo sintoma (${sintoma}). Clique em "Diagnosticar" após testar.</p>
+
+                    <div class="categoria">Outras regiões do mesmo nervo (${nervo}) - Se afetadas, sugere lesão periférica exclusiva.</div>
+                    ${outrasRegioesNervo.map(reg => `
+                        <div class="regiao-item checkbox-group">
+                            <input type="checkbox" id="nervo_${reg.replace(/\s+/g, '_')}" value="${reg}">
+                            <label for="nervo_${reg.replace(/\s+/g, '_')}">${reg}</label>
+                        </div>
+                    `).join('')}
+
+                    <div class="categoria">Regiões de outras raízes compartilhadas - Se afetadas, sugere lesão de raiz exclusiva.</div>
+                    ${regioesOutrasRaizes.map(reg => `
+                        <div class="regiao-item checkbox-group">
+                            <input type="checkbox" id="raiz_${reg.replace(/\s+/g, '_')}" value="${reg}">
+                            <label for="raiz_${reg.replace(/\s+/g, '_')}">${reg}</label>
+                        </div>
+                    `).join('')}
+                </div>
+                <button onclick="fazerDiagnostico('${nervo}', '${regiaoSelecionada}', '${sintoma}')">Diagnosticar</button>
+            `;
+
+            document.getElementById('sugestoes').innerHTML = html;
+            document.getElementById('diagnostico').innerHTML = '';
+        }
+
+        function fazerDiagnostico(nervo, regiaoInicial, sintoma) {
+            // Contar afetadas por categoria
+            let afetadasNervo = 0;
+            let totalNervo = 0;
+            let afetadasRaiz = 0;
+            let totalRaiz = 0;
+
+            // Verificar checkboxes do nervo
+            const checkboxesNervo = document.querySelectorAll('input[id^="nervo_"]:checked');
+            afetadasNervo = checkboxesNervo.length;
+            totalNervo = document.querySelectorAll('input[id^="nervo_"]').length;
+
+            // Verificar checkboxes da raiz
+            const checkboxesRaiz = document.querySelectorAll('input[id^="raiz_"]:checked');
+            afetadasRaiz = checkboxesRaiz.length;
+            totalRaiz = document.querySelectorAll('input[id^="raiz_"]').length;
+
+            let diagnostico = '';
+            let classe = 'indeterminado';
+
+            if (afetadasNervo > 0 && afetadasNervo / totalNervo > 0.5) {
+                // Maioria das regiões do nervo afetadas: periférico
+                diagnostico = `Sugestão: Lesão exclusiva no nervo periférico (${nervo}). Todas as regiões testadas do nervo mostram ${sintoma}.`;
+                classe = 'periferico';
+            } else if (afetadasRaiz > 0 && afetadasRaiz / totalRaiz > 0.5) {
+                // Maioria das regiões da raiz afetadas: raiz
+                diagnostico = `Sugestão: Lesão exclusiva na raiz nervosa (ex.: ${nervo.split(' ')[1] || 'desconhecido'}). Regiões de raízes compartilhadas mostram ${sintoma}, mas não do nervo isolado.`;
+                classe = 'raiz';
+            } else if (afetadasNervo === 0 && afetadasRaiz === 0) {
+                diagnostico = `Indeterminado: Nenhuma região adicional afetada. Teste mais regiões ou considere outros fatores.`;
+            } else {
+                diagnostico = `Indeterminado: Padrão misto. Teste mais regiões para esclarecer.`;
+            }
+
+            document.getElementById('diagnostico').innerHTML = `
+                <div class="${classe}">${diagnostico}</div>
+            `;
+        }
+
+        // Inicializar ao carregar
+        window.onload = function() {
+            inicializarDropdowns();
+            criarMapas();
+        };
+    </script>
+</body>
+</html>

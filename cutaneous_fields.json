@@ -1,0 +1,59 @@
+{
+  "regioes_sensitivas": [
+    {
+      "regiao": "Pele da região lateral do antebraço (nervo cutâneo lateral do antebraço)",
+      "nervo_periferico": "Nervo musculocutâneo",
+      "raizes_nervosas": ["C5", "C6", "C7"]
+    },
+    {
+      "regiao": "Pele sobre o músculo deltoide",
+      "nervo_periferico": "Nervo axilar",
+      "raizes_nervosas": ["C5", "C6"]
+    },
+    {
+      "regiao": "Pele da superfície posterior do braço",
+      "nervo_periferico": "Nervo radial",
+      "raizes_nervosas": ["C5", "C6", "C7", "C8", "T1"]
+    },
+    {
+      "regiao": "Região central da superfície posterior do antebraço",
+      "nervo_periferico": "Nervo radial",
+      "raizes_nervosas": ["C5", "C6", "C7", "C8", "T1"]
+    },
+    {
+      "regiao": "Superfície lateral do dorso da mão",
+      "nervo_periferico": "Nervo radial",
+      "raizes_nervosas": ["C5", "C6", "C7", "C8", "T1"]
+    },
+    {
+      "regiao": "Região posterior do polegar, do indicador e da metade lateral do dedo médio",
+      "nervo_periferico": "Nervo radial",
+      "raizes_nervosas": ["C5", "C6", "C7", "C8", "T1"]
+    },
+    {
+      "regiao": "Pele da metade lateral da palma da mão",
+      "nervo_periferico": "Nervo mediano",
+      "raizes_nervosas": ["C6", "C7", "C8", "T1"]
+    },
+    {
+      "regiao": "Porção anterior do polegar, do indicador, do dedo médio e da metade lateral do anelar",
+      "nervo_periferico": "Nervo mediano",
+      "raizes_nervosas": ["C6", "C7", "C8", "T1"]
+    },
+    {
+      "regiao": "Porção posterior do polegar, do indicador e da metade lateral do dedo médio",
+      "nervo_periferico": "Nervo mediano",
+      "raizes_nervosas": ["C6", "C7", "C8", "T1"]
+    },
+    {
+      "regiao": "Pele anterior e posterior da metade medial da palma da mão",
+      "nervo_periferico": "Nervo ulnar",
+      "raizes_nervosas": ["C8", "T1"]
+    },
+    {
+      "regiao": "Pele anterior e posterior do dedo mínimo e da metade medial do anelar",
+      "nervo_periferico": "Nervo ulnar",
+      "raizes_nervosas": ["C8", "T1"]
+    }
+  ]
+}
