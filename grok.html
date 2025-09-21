@@ -322,7 +322,15 @@
             } else if (suspectedRoot) {
                 // Raiz específica identificada
                 const nervosAfetados = Array.from(mapaRaizNervos[suspectedRoot] || []);
-                diagnostico = `Sugestão: Lesão exclusiva na raiz nervosa ${suspectedRoot}, afetando nervos periféricos: ${nervosAfetados.join(', ')}. Regiões desta raiz mostram ${sintoma}, mas não do nervo isolado.`;
+                let viaAfetada = '';
+                if (sintoma === 'Dor') {
+                    viaAfetada = 'afetando região anterolateral do trato espinotalâmico';
+                } else if (sintoma === 'Vibração') {
+                    viaAfetada = 'afetando coluna dorsal do lemnisco medial';
+                } else {
+                    viaAfetada = 'afetando ambos os tratos (espinotalâmico e lemnisco medial)';
+                }
+                diagnostico = `Sugestão: Lesão exclusiva na raiz nervosa ${suspectedRoot}, ${viaAfetada}, afetando nervos periféricos: ${nervosAfetados.join(', ')}. Regiões desta raiz mostram ${sintoma}, mas não do nervo isolado.`;
                 classe = 'raiz';
             } else if (afetadasRaiz > 0) {
                 diagnostico = `Indeterminado: Regiões de raízes afetadas, mas sem raiz específica clara. Teste mais regiões.`;
