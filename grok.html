@@ -267,7 +267,7 @@
             const raizes = window.raizesAtuais;
             const sintoma = window.sintomaAtual;
 
-            console.log('Atualizando diagnóstico para nervo:', nervo, 'raizes:', raizes);
+
 
             // Contar afetadas por nervo
             const checkboxesNervo = document.querySelectorAll('input[id^="nervo_"]:checked');
@@ -303,7 +303,7 @@
             let diagnostico = '';
             let classe = 'indeterminado';
 
-            console.log('Antes de determinar classe - afetadasNervo:', afetadasNervo, 'totalNervo:', totalNervo, 'suspectedRoot:', suspectedRoot);
+
 
             if (afetadasNervo > 0 && afetadasNervo / totalNervo > 0.5) {
                 // Maioria das regiões do nervo afetadas: periférico
@@ -321,7 +321,7 @@
                 diagnostico = `Indeterminado: Padrão misto. Teste mais regiões para esclarecer.`;
             }
 
-            console.log('Classe final:', classe, 'SuspectedRoot:', suspectedRoot);
+
 
             document.getElementById('diagnostico').innerHTML = `
                 <div class="${classe}">${diagnostico}</div>
@@ -340,34 +340,25 @@
                 }
             }
 
-            // Excluir opções irrelevantes
-            const nervoEl = document.getElementById('nervo-section');
-            console.log('NervoEl encontrado:', !!nervoEl);
-            if (nervoEl) {
-                if (classe === 'periferico') {
-                    nervoEl.style.display = 'block';
-                } else if (suspectedRoot) {
-                    nervoEl.style.display = 'none';
-                } else {
-                    nervoEl.style.display = 'block';
-                }
-                console.log('NervoEl display set to:', nervoEl.style.display);
-            }
+            // Ocultar todas as sugestões se diagnóstico estabelecido
+            if (classe !== 'indeterminado') {
+                const nervoEl = document.getElementById('nervo-section');
+                if (nervoEl) nervoEl.style.display = 'none';
 
-            raizes.forEach(raiz => {
-                const raizEl = document.getElementById(`raiz-${raiz}-section`);
-                console.log('Raiz', raiz, 'El encontrado:', !!raizEl);
-                if (raizEl) {
-                    if (classe === 'periferico') {
-                        raizEl.style.display = 'none';
-                    } else if (suspectedRoot) {
-                        raizEl.style.display = raiz === suspectedRoot ? 'block' : 'none';
-                    } else {
-                        raizEl.style.display = 'block';
-                    }
-                    console.log('RaizEl', raiz, 'display set to:', raizEl.style.display);
-                }
-            });
+                raizes.forEach(raiz => {
+                    const raizEl = document.getElementById(`raiz-${raiz}-section`);
+                    if (raizEl) raizEl.style.display = 'none';
+                });
+            } else {
+                // Mostrar apenas opções relevantes para indeterminado
+                const nervoEl = document.getElementById('nervo-section');
+                if (nervoEl) nervoEl.style.display = 'block';
+
+                raizes.forEach(raiz => {
+                    const raizEl = document.getElementById(`raiz-${raiz}-section`);
+                    if (raizEl) raizEl.style.display = 'block';
+                });
+            }
         }
 
         // Inicializar ao carregar
