@@ -291,7 +291,7 @@
             let maxRatio = 0;
             raizes.forEach(raiz => {
                 const regioesRaiz = mapaRaizRegioes[raiz].filter(r => r !== window.regiaoSelecionadaAtual);
-                const total = regioesRaiz.length;
+                const total = regioesRaiz.slice(0, 3).length;
                 const affected = rootAffected[raiz] || 0;
                 const ratio = total > 0 ? affected / total : 0;
                 if (ratio > 0.5 && ratio > maxRatio) {
