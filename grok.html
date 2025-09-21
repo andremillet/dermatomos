@@ -340,25 +340,38 @@
                 }
             }
 
-            // Ocultar todas as sugestões se diagnóstico estabelecido
-            if (classe !== 'indeterminado') {
-                const nervoEl = document.getElementById('nervo-section');
-                if (nervoEl) nervoEl.style.display = 'none';
-
-                raizes.forEach(raiz => {
-                    const raizEl = document.getElementById(`raiz-${raiz}-section`);
-                    if (raizEl) raizEl.style.display = 'none';
-                });
-            } else {
-                // Mostrar apenas opções relevantes para indeterminado
-                const nervoEl = document.getElementById('nervo-section');
-                if (nervoEl) nervoEl.style.display = 'block';
-
-                raizes.forEach(raiz => {
-                    const raizEl = document.getElementById(`raiz-${raiz}-section`);
-                    if (raizEl) raizEl.style.display = 'block';
-                });
+            // Ajustar visibilidade de seções e itens
+            const nervoEl = document.getElementById('nervo-section');
+            if (nervoEl) {
+                if (classe === 'periferico') {
+                    nervoEl.style.display = 'block';
+                } else if (suspectedRoot) {
+                    nervoEl.style.display = 'none';
+                } else {
+                    nervoEl.style.display = 'block';
+                }
             }
+
+            raizes.forEach(raiz => {
+                const raizEl = document.getElementById(`raiz-${raiz}-section`);
+                if (raizEl) {
+                    if (classe === 'periferico') {
+                        raizEl.style.display = 'none';
+                    } else if (suspectedRoot) {
+                        raizEl.style.display = raiz === suspectedRoot ? 'block' : 'none';
+                    } else {
+                        raizEl.style.display = 'block';
+                    }
+                }
+            });
+
+            // Ocultar apenas itens desmarcados se diagnóstico estabelecido
+            document.querySelectorAll('.regiao-item').forEach(item => {
+                const cb = item.querySelector('input[type="checkbox"]');
+                if (cb) {
+                    item.style.display = (classe === 'indeterminado' || cb.checked) ? 'block' : 'none';
+                }
+            });
         }
 
         // Inicializar ao carregar
