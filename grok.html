@@ -230,9 +230,9 @@
             let html = `
                 <div class="sugestao">
                     <h3>Sugestões de Testes para ${sintoma.toUpperCase()} (${regiaoSelecionada})</h3>
-                    <p><strong>Nervo suspeito:</strong> ${nervo}</p>
-                    <p><strong>Raízes suspeitas:</strong> ${raizes.join(', ')}</p>
-                    <p>Marque as regiões abaixo se apresentarem o mesmo sintoma (${sintoma}). Clique em "Diagnosticar" após testar.</p>
+                     <p><strong>Nervo suspeito:</strong> ${nervo}</p>
+                     <p><strong>Raízes suspeitas:</strong> <span id="raizes-suspeitas" class="suspeita">${raizes.join(', ')}</span></p>
+                     <p>Marque as regiões abaixo se apresentarem o mesmo sintoma (${sintoma}). Clique em "Diagnosticar" após testar.</p>
 
                     <div class="categoria">Outras regiões do mesmo nervo (${nervo}) - Se afetadas, sugere lesão periférica exclusiva.</div>
                     ${outrasRegioesNervo.map(reg => `
@@ -244,7 +244,7 @@
 
                     <div class="categoria">Regiões de outras raízes compartilhadas - Se afetadas, sugere lesão de raiz exclusiva.</div>
                     ${regioesOutrasRaizes.map(reg => `
-                        <div class="regiao-item checkbox-group suspeita">
+                        <div class="regiao-item checkbox-group">
                             <input type="checkbox" id="raiz_${reg.replace(/\s+/g, '_')}" value="${reg}">
                             <label for="raiz_${reg.replace(/\s+/g, '_')}">${reg}</label>
                         </div>
@@ -296,9 +296,9 @@
             `;
 
             // Atualizar highlights das raízes suspeitas
-            const rootItems = document.querySelectorAll('.regiao-item.suspeita');
-            if (classe === 'periferico') {
-                rootItems.forEach(item => item.classList.remove('suspeita'));
+            const raizesSpan = document.getElementById('raizes-suspeitas');
+            if (raizesSpan && classe === 'periferico') {
+                raizesSpan.classList.remove('suspeita');
             }
             // Para 'raiz' e 'indeterminado', manter highlights
         }
