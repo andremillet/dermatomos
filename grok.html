@@ -175,6 +175,7 @@
         let mapaNervoRegioes = {};
         let mapaRaizRegioes = {};
         let mapaRaizNervos = {};
+        let mapaRegiaoNervo = {};
 
         function criarMapas() {
             dados.regioes_sensitivas.forEach(item => {
@@ -183,6 +184,9 @@
                     mapaNervoRegioes[item.nervo_periferico] = [];
                 }
                 mapaNervoRegioes[item.nervo_periferico].push(item.regiao);
+
+                // Mapa região para nervo
+                mapaRegiaoNervo[item.regiao] = item.nervo_periferico;
 
                 // Por raiz (cada raiz separada)
                 item.raizes_nervosas.forEach(raiz => {
@@ -238,7 +242,7 @@
                      ${outrasRegioesNervo.map(reg => `
                          <div class="regiao-item checkbox-group">
                              <input type="checkbox" id="nervo_${reg.replace(/\s+/g, '_')}" value="${reg}">
-                             <label for="nervo_${reg.replace(/\s+/g, '_')}">${reg}</label>
+                             <label for="nervo_${reg.replace(/\s+/g, '_')}">${reg} (nervo: ${mapaRegiaoNervo[reg] || 'desconhecido'})</label>
                          </div>
                      `).join('')}
 
@@ -249,7 +253,7 @@
                          ${regioesRaiz.map(reg => `
                              <div class="regiao-item checkbox-group">
                                  <input type="checkbox" id="raiz_${raiz}_${reg.replace(/\s+/g, '_')}" value="${reg}" data-raiz="${raiz}">
-                                 <label for="raiz_${raiz}_${reg.replace(/\s+/g, '_')}">${reg}</label>
+                                 <label for="raiz_${raiz}_${reg.replace(/\s+/g, '_')}">${reg} (nervo: ${mapaRegiaoNervo[reg] || 'desconhecido'})</label>
                              </div>
                          `).join('')}`;
                      }).join('')}
