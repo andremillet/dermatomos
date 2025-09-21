@@ -70,6 +70,7 @@
         .periferico { background-color: #d4edda; color: #155724; }
         .raiz { background-color: #f8d7da; color: #721c24; }
         .indeterminado { background-color: #fff3cd; color: #856404; }
+        .suspeita { background-color: #fffacd; }
     </style>
 </head>
 <body>
@@ -243,7 +244,7 @@
 
                     <div class="categoria">Regiões de outras raízes compartilhadas - Se afetadas, sugere lesão de raiz exclusiva.</div>
                     ${regioesOutrasRaizes.map(reg => `
-                        <div class="regiao-item checkbox-group">
+                        <div class="regiao-item checkbox-group suspeita">
                             <input type="checkbox" id="raiz_${reg.replace(/\s+/g, '_')}" value="${reg}">
                             <label for="raiz_${reg.replace(/\s+/g, '_')}">${reg}</label>
                         </div>
@@ -293,6 +294,13 @@
             document.getElementById('diagnostico').innerHTML = `
                 <div class="${classe}">${diagnostico}</div>
             `;
+
+            // Atualizar highlights das raízes suspeitas
+            const rootItems = document.querySelectorAll('.regiao-item.suspeita');
+            if (classe === 'periferico') {
+                rootItems.forEach(item => item.classList.remove('suspeita'));
+            }
+            // Para 'raiz' e 'indeterminado', manter highlights
         }
 
         // Inicializar ao carregar
