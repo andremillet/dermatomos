@@ -228,7 +228,7 @@
                      <p><strong>Raízes suspeitas:</strong> <span id="raizes-suspeitas" class="suspeita">${raizes.join(', ')}</span></p>
                      <p>Marque as regiões abaixo se apresentarem o mesmo sintoma (${sintoma}). Clique em "Diagnosticar" após testar.</p>
 
-                     <div class="categoria">Outras regiões do mesmo nervo (${nervo}) - Se afetadas, sugere lesão periférica exclusiva.</div>
+                     <div id="nervo-section" class="categoria">Outras regiões do mesmo nervo (${nervo}) - Se afetadas, sugere lesão periférica exclusiva.</div>
                      ${outrasRegioesNervo.map(reg => `
                          <div class="regiao-item checkbox-group">
                              <input type="checkbox" id="nervo_${reg.replace(/\s+/g, '_')}" value="${reg}">
@@ -239,7 +239,7 @@
                      ${raizes.map(raiz => {
                          const regioesRaiz = mapaRaizRegioes[raiz].filter(r => r !== regiaoSelecionada).slice(0, 3);
                          if (regioesRaiz.length === 0) return '';
-                         return `<div class="categoria">Raiz ${raiz} - Se regiões afetadas, sugere lesão nesta raiz.</div>
+                         return `<div id="raiz-${raiz}-section" class="categoria">Raiz ${raiz} - Se regiões afetadas, sugere lesão nesta raiz.</div>
                          ${regioesRaiz.map(reg => `
                              <div class="regiao-item checkbox-group">
                                  <input type="checkbox" id="raiz_${raiz}_${reg.replace(/\s+/g, '_')}" value="${reg}" data-raiz="${raiz}">
@@ -323,10 +323,27 @@
 
             // Atualizar highlights das raízes suspeitas
             const raizesSpan = document.getElementById('raizes-suspeitas');
-            if (raizesSpan && classe === 'periferico') {
-                raizesSpan.classList.remove('suspeita');
+            if (raizesSpan) {
+                if (classe === 'periferico') {
+                    raizesSpan.classList.remove('suspeita');
+                } else if (suspectedRoot) {
+                    // Destacar apenas a raiz suspeita
+                    raizesSpan.innerHTML = raizes.map(r => r === suspectedRoot ? `<span class="suspeita">${r}</span>` : r).join(', ');
+                } else {
+                    raizesSpan.classList.add('suspeita');
+                }
             }
-            // Para outros casos, manter highlights
+
+            // Excluir opções irrelevantes
+            const nervoEl = document.getElementById('nervo-section');
+            if (nervoEl) nervoEl.style.display = suspectedRoot ? 'none' : 'block';
+
+            raizes.forEach(raiz => {
+                const raizEl = document.getElementById(`raiz-${raiz}-section`);
+                if (raizEl) {
+                    raizEl.style.display = (suspectedRoot && suspectedRoot !== raiz) ? 'none' : 'block';
+                }
+            });
         }
 
         // Inicializar ao carregar
