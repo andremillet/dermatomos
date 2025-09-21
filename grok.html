@@ -340,7 +340,7 @@
                 }
             }
 
-            // Ajustar visibilidade de seções e itens
+            // Ajustar visibilidade de seções e itens: ocultar raízes se lesão periférica, mostrar apenas raiz suspeita se específica
             const nervoEl = document.getElementById('nervo-section');
             if (nervoEl) {
                 if (classe === 'periferico') {
@@ -356,9 +356,9 @@
                 const raizEl = document.getElementById(`raiz-${raiz}-section`);
                 if (raizEl) {
                     if (classe === 'periferico') {
-                        raizEl.style.display = 'none';
+                        raizEl.style.display = 'none'; // Ocultar raízes se lesão no nervo
                     } else if (suspectedRoot) {
-                        raizEl.style.display = raiz === suspectedRoot ? 'block' : 'none';
+                        raizEl.style.display = raiz === suspectedRoot ? 'block' : 'none'; // Mostrar apenas raiz suspeita
                     } else {
                         raizEl.style.display = 'block';
                     }
