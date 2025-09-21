@@ -212,19 +212,13 @@
             const raizes = itemSelecionado.raizes_nervosas;
 
             // Sugestões: outras regiões do mesmo nervo (para confirmar periférico)
-            let outrasRegioesNervo = mapaNervoRegioes[nervo].filter(r => r !== regiaoSelecionada);
-            // Para cada raiz, regiões de outras raízes (para confirmar raiz)
-            let regioesOutrasRaizes = [];
-            raizes.forEach(raiz => {
-                const regioesRaiz = mapaRaizRegioes[raiz].filter(r => r !== regiaoSelecionada);
-                regioesOutrasRaizes.push(...regioesRaiz);
-            });
-            // Remover duplicatas
-            regioesOutrasRaizes = [...new Set(regioesOutrasRaizes)];
+            let outrasRegioesNervo = mapaNervoRegioes[nervo].filter(r => r !== regiaoSelecionada).slice(0, 3);
 
-            // Limitar sugestões para eficiência
-            outrasRegioesNervo = outrasRegioesNervo.slice(0, 3);
-            regioesOutrasRaizes = regioesOutrasRaizes.slice(0, 3);
+            // Armazenar dados atuais para diagnóstico dinâmico
+            window.nervoAtual = nervo;
+            window.raizesAtuais = raizes;
+            window.regiaoSelecionadaAtual = regiaoSelecionada;
+            window.sintomaAtual = sintoma;
 
             // Exibir sugestões com checkboxes para marcar se afetado
             let html = `
@@ -234,45 +228,75 @@
                      <p><strong>Raízes suspeitas:</strong> <span id="raizes-suspeitas" class="suspeita">${raizes.join(', ')}</span></p>
                      <p>Marque as regiões abaixo se apresentarem o mesmo sintoma (${sintoma}). Clique em "Diagnosticar" após testar.</p>
 
-                    <div class="categoria">Outras regiões do mesmo nervo (${nervo}) - Se afetadas, sugere lesão periférica exclusiva.</div>
-                    ${outrasRegioesNervo.map(reg => `
-                        <div class="regiao-item checkbox-group">
-                            <input type="checkbox" id="nervo_${reg.replace(/\s+/g, '_')}" value="${reg}">
-                            <label for="nervo_${reg.replace(/\s+/g, '_')}">${reg}</label>
-                        </div>
-                    `).join('')}
+                     <div class="categoria">Outras regiões do mesmo nervo (${nervo}) - Se afetadas, sugere lesão periférica exclusiva.</div>
+                     ${outrasRegioesNervo.map(reg => `
+                         <div class="regiao-item checkbox-group">
+                             <input type="checkbox" id="nervo_${reg.replace(/\s+/g, '_')}" value="${reg}">
+                             <label for="nervo_${reg.replace(/\s+/g, '_')}">${reg}</label>
+                         </div>
+                     `).join('')}
 
-                    <div class="categoria">Regiões de outras raízes compartilhadas - Se afetadas, sugere lesão de raiz exclusiva.</div>
-                    ${regioesOutrasRaizes.map(reg => `
-                        <div class="regiao-item checkbox-group">
-                            <input type="checkbox" id="raiz_${reg.replace(/\s+/g, '_')}" value="${reg}">
-                            <label for="raiz_${reg.replace(/\s+/g, '_')}">${reg}</label>
-                        </div>
-                    `).join('')}
-                </div>
-                <button onclick="fazerDiagnostico('${nervo}', '${regiaoSelecionada}', '${sintoma}')">Diagnosticar</button>
+                     ${raizes.map(raiz => {
+                         const regioesRaiz = mapaRaizRegioes[raiz].filter(r => r !== regiaoSelecionada).slice(0, 3);
+                         if (regioesRaiz.length === 0) return '';
+                         return `<div class="categoria">Raiz ${raiz} - Se regiões afetadas, sugere lesão nesta raiz.</div>
+                         ${regioesRaiz.map(reg => `
+                             <div class="regiao-item checkbox-group">
+                                 <input type="checkbox" id="raiz_${raiz}_${reg.replace(/\s+/g, '_')}" value="${reg}" data-raiz="${raiz}">
+                                 <label for="raiz_${raiz}_${reg.replace(/\s+/g, '_')}">${reg}</label>
+                             </div>
+                         `).join('')}`;
+                     }).join('')}
+                 </div>
             `;
 
-            document.getElementById('sugestoes').innerHTML = html;
-            document.getElementById('diagnostico').innerHTML = '';
+             document.getElementById('sugestoes').innerHTML = html;
+             document.getElementById('diagnostico').innerHTML = '';
+
+             // Adicionar listeners para diagnóstico dinâmico
+             document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                 cb.addEventListener('change', atualizarDiagnostico);
+             });
+
+             // Diagnóstico inicial
+             atualizarDiagnostico();
         }
 
-        function fazerDiagnostico(nervo, regiaoInicial, sintoma) {
-            // Contar afetadas por categoria
-            let afetadasNervo = 0;
-            let totalNervo = 0;
-            let afetadasRaiz = 0;
-            let totalRaiz = 0;
+         function atualizarDiagnostico() {
+            const nervo = window.nervoAtual;
+            const raizes = window.raizesAtuais;
+            const sintoma = window.sintomaAtual;
 
-            // Verificar checkboxes do nervo
+            // Contar afetadas por nervo
             const checkboxesNervo = document.querySelectorAll('input[id^="nervo_"]:checked');
-            afetadasNervo = checkboxesNervo.length;
-            totalNervo = document.querySelectorAll('input[id^="nervo_"]').length;
+            const afetadasNervo = checkboxesNervo.length;
+            const totalNervo = document.querySelectorAll('input[id^="nervo_"]').length;
 
-            // Verificar checkboxes da raiz
+            // Contar afetadas por raiz
             const checkboxesRaiz = document.querySelectorAll('input[id^="raiz_"]:checked');
-            afetadasRaiz = checkboxesRaiz.length;
-            totalRaiz = document.querySelectorAll('input[id^="raiz_"]').length;
+            const afetadasRaiz = checkboxesRaiz.length;
+            const totalRaiz = document.querySelectorAll('input[id^="raiz_"]').length;
+
+            // Encontrar raiz suspeita específica
+            let rootAffected = {};
+            checkboxesRaiz.forEach(cb => {
+                const raiz = cb.getAttribute('data-raiz');
+                if (!rootAffected[raiz]) rootAffected[raiz] = 0;
+                rootAffected[raiz]++;
+            });
+
+            let suspectedRoot = null;
+            let maxRatio = 0;
+            raizes.forEach(raiz => {
+                const regioesRaiz = mapaRaizRegioes[raiz].filter(r => r !== window.regiaoSelecionadaAtual);
+                const total = regioesRaiz.length;
+                const affected = rootAffected[raiz] || 0;
+                const ratio = total > 0 ? affected / total : 0;
+                if (ratio > 0.5 && ratio > maxRatio) {
+                    maxRatio = ratio;
+                    suspectedRoot = raiz;
+                }
+            });
 
             let diagnostico = '';
             let classe = 'indeterminado';
@@ -281,10 +305,12 @@
                 // Maioria das regiões do nervo afetadas: periférico
                 diagnostico = `Sugestão: Lesão exclusiva no nervo periférico (${nervo}). Todas as regiões testadas do nervo mostram ${sintoma}.`;
                 classe = 'periferico';
-            } else if (afetadasRaiz > 0 && afetadasRaiz / totalRaiz > 0.5) {
-                // Maioria das regiões da raiz afetadas: raiz
-                diagnostico = `Sugestão: Lesão exclusiva na raiz nervosa (ex.: ${nervo.split(' ')[1] || 'desconhecido'}). Regiões de raízes compartilhadas mostram ${sintoma}, mas não do nervo isolado.`;
+            } else if (suspectedRoot) {
+                // Raiz específica identificada
+                diagnostico = `Sugestão: Lesão exclusiva na raiz nervosa ${suspectedRoot}. Regiões desta raiz mostram ${sintoma}, mas não do nervo isolado.`;
                 classe = 'raiz';
+            } else if (afetadasRaiz > 0) {
+                diagnostico = `Indeterminado: Regiões de raízes afetadas, mas sem raiz específica clara. Teste mais regiões.`;
             } else if (afetadasNervo === 0 && afetadasRaiz === 0) {
                 diagnostico = `Indeterminado: Nenhuma região adicional afetada. Teste mais regiões ou considere outros fatores.`;
             } else {
@@ -300,7 +326,7 @@
             if (raizesSpan && classe === 'periferico') {
                 raizesSpan.classList.remove('suspeita');
             }
-            // Para 'raiz' e 'indeterminado', manter highlights
+            // Para outros casos, manter highlights
         }
 
         // Inicializar ao carregar
